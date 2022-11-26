@@ -1,0 +1,9 @@
+8
+EquivalentTo 0
+ImpliesLanguage 1
+ImpliesProfession 2
+NextAlmaMater 3
+TransfersTo 4
+ImpliesLocation 5
+ImpliesTimeZone 6
+ImpliesGenre 7

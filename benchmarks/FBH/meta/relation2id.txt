@@ -1,0 +1,7 @@
+6
+PrerequisiteFor 0
+EquivalentTo 1
+ImpliesLocation 2
+ImpliesProfession 3
+ImpliesSports 4
+NextEventPlace 5

@@ -1,0 +1,11 @@
+10
+NextEventPlace 0
+TransfersTo 1
+EquivalentTo 2
+SucceededBy 3
+ImpliesSports 4
+PrerequisiteFor 5
+ImpliesLocation 6
+WorksUnder 7
+HigherThan 8
+ImpliesProfession 9
