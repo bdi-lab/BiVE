@@ -26,8 +26,8 @@ To train BiVE_QuatE, use `bive_quate.py`.
 CUDA_VISIBLE_DEVICES=0 python bive_quate.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug]
 ```
 
-To train BiVE_BiQUE, use `bive_bique.py`.
+To train BiVE_BiQUE, use `bive_bique_add.py`.
 
 ```
-CUDA_VISIBLE_DEVICES=0 python bive_bique.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug]
+CUDA_VISIBLE_DEVICES=0 python bive_bique_add.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug]
 ```
