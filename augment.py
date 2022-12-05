@@ -6,7 +6,7 @@ import time
 parser = argparse.ArgumentParser()
 parser.add_argument('data')
 parser.add_argument('conf', type=float)
-parser.add_argument('count', type=int)
+parser.add_argument('--count', type=int, default=0)
 parser.add_argument('--num_iter', type=int, default=50000000)
 parser.add_argument('--seed', type=int, default=0)
 args = parser.parse_args()

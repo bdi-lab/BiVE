@@ -13,21 +13,21 @@ When you use this code, please cite our paper.
 Use `augment.py` to perform data augmentation.
 
 ```
-python augment.py [data] [conf] [count]
+python augment.py [data] [conf]
 ```
 - `[data]`: name of the dataset. The name should be the directory name of the dataset contained in the `./benchmarks` folder.
 - `[conf]`: threshold of the confidence score, i.e., $\tau$ in the paper.
 
 ### BiVE
 
-To train BiVE_QuatE, use `bive_quate.py`.
+To train BiVE-Q, use `bive_q.py`.
 
 ```
-CUDA_VISIBLE_DEVICES=0 python bive_quate.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug]
+CUDA_VISIBLE_DEVICES=0 python bive_q.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
 ```
 
-To train BiVE_BiQUE, use `bive_bique_add.py`.
+To train BiVE-B, use `bive_b.py`.
 
 ```
-CUDA_VISIBLE_DEVICES=0 python bive_bique_add.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug]
+CUDA_VISIBLE_DEVICES=0 python bive_b.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
 ```

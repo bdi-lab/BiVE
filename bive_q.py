@@ -1,6 +1,6 @@
 import openke
 from openke.config import Trainer, Tester
-from openke.module.model import BiVE_QuatE
+from openke.module.model import BiVE_Q
 from openke.module.loss import SoftplusLoss
 from openke.module.strategy import NegativeSampling
 from openke.data import TrainDataLoader, TestDataLoader
@@ -88,7 +88,7 @@ if args.aug != 0.0:
 	batch_aug_size = int(len(list_aug) / 100)
 
 # define the model
-BiVE_QuatE = BiVE_QuatE(
+BiVE_Q = BiVE_Q(
 	ent_tot=train_dataloader.get_ent_tot(),
 	rel_tot=train_dataloader.get_rel_tot(),
 	meta_rel_tot=meta_rel_tot,
@@ -98,13 +98,13 @@ BiVE_QuatE = BiVE_QuatE(
 
 try:
 	print("Loading checkpoint alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt".format(args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
-	BiVE_QuatE.load_checkpoint('./checkpoint/{}/BiVE_QuatE/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
+	BiVE_Q.load_checkpoint('./checkpoint/{}/BiVE_Q/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
 except:
 	print("No checkpoint available!")
 		
 	# define the loss function
 	model = NegativeSampling(
-		model=BiVE_QuatE, 
+		model=BiVE_Q, 
 		loss=SoftplusLoss(),
 		batch_size=train_dataloader.get_batch_size(), 
 		regul_rate=args.regul,
@@ -132,17 +132,17 @@ except:
 	)
 	
 	trainer.run()
-		os.makedirs("./checkpoint/{}/BiVE_QuatE".format(args.data), exist_ok=True)
-		BiVE_QuatE.save_checkpoint('./checkpoint/{}/BiVE_QuatE/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
+		os.makedirs("./checkpoint/{}/BiVE_Q".format(args.data), exist_ok=True)
+		BiVE_Q.save_checkpoint('./checkpoint/{}/BiVE_Q/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
 
 if args.lp:
 	test_dataloader = TestDataLoader("./benchmarks/{}/base/".format(args.data), "link")
-	tester = Tester(model=BiVE_QuatE, data_loader=test_dataloader, use_gpu=True)
+	tester = Tester(model=BiVE_Q, data_loader=test_dataloader, use_gpu=True)
 	mr, mrr, hit10, hit3, hit1 = tester.run_link_prediction(type_constrain=False)
 
 elif args.tp:
 	test_dataloader = TestDataLoader("./benchmarks/{}/meta/".format(args.data), "link")
-	tester = Tester(model=BiVE_QuatE, data_loader=test_dataloader, use_gpu=True)
+	tester = Tester(model=BiVE_Q, data_loader=test_dataloader, use_gpu=True)
 	mr, mrr, hit10, hit3, hit1 = tester.run_triplet_prediction(type_constrain=False, list_entity_meta=list_entity_meta)
 	
 elif args.clp:
@@ -156,7 +156,7 @@ elif args.clp:
 	list_info = np.array(list_info).astype(int)
 
 	test_dataloader = TestDataLoader("./benchmarks/{}/conditional/".format(args.data), "link")
-	tester = Tester(model=BiVE_QuatE, data_loader=test_dataloader, use_gpu=True)
+	tester = Tester(model=BiVE_Q, data_loader=test_dataloader, use_gpu=True)
 	mr_tail, mrr_tail, hit10_tail, hit3_tail, hit1_tail = tester.run_conditional_link_prediction(type_constrain=False, list_info=list_info, weight_meta=args.meta)
 
 	list_info = []
@@ -169,21 +169,21 @@ elif args.clp:
 	list_info = np.array(list_info).astype(int)
 
 	test_dataloader = TestDataLoader("./benchmarks/{}/conditional_head/".format(args.data), "link")
-	tester = Tester(model=BiVE_QuatE, data_loader=test_dataloader, use_gpu=True)
+	tester = Tester(model=BiVE_Q, data_loader=test_dataloader, use_gpu=True)
 	mr_head, mrr_head, hit10_head, hit3_head, hit1_head = tester.run_conditional_link_prediction_head(type_constrain=False, list_info=list_info, weight_meta=args.meta)
 	mr, mrr, hit10, hit3, hit1 = (mr_tail + mr_head) / 2, (mrr_tail + mrr_head) / 2, (hit10_tail + hit10_head) / 2, (hit3_tail + hit3_head) / 2, (hit1_tail + hit1_head) / 2
 	
 if args.lp:
-	os.makedirs("./result_test/{}/BiVE_QuatE/LP".format(args.data), exist_ok=True)
-	with open("./result_test/{}/BiVE_QuatE/LP/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.txt".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial), 'w') as f:
+	os.makedirs("./result_test/{}/BiVE_Q/LP".format(args.data), exist_ok=True)
+	with open("./result_test/{}/BiVE_Q/LP/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.txt".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial), 'w') as f:
 		f.write("LP: {} {} {} {} {}\n".format(mr, mrr, hit10, hit3, hit1))
 
 elif args.tp:
-	os.makedirs("./result_test/{}/BiVE_QuatE/TP".format(args.data), exist_ok=True)
-	with open("./result_test/{}/BiVE_QuatE/TP/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.txt".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial), 'w') as f:
+	os.makedirs("./result_test/{}/BiVE_Q/TP".format(args.data), exist_ok=True)
+	with open("./result_test/{}/BiVE_Q/TP/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.txt".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial), 'w') as f:
 		f.write("TP: {} {} {} {} {}\n".format(mr, mrr, hit10, hit3, hit1))
 
 elif args.clp:
-	os.makedirs("./result_test/{}/BiVE_QuatE/CLP".format(args.data), exist_ok=True)
-	with open("./result_test/{}/BiVE_QuatE/CLP/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.txt".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial), 'w') as f:
+	os.makedirs("./result_test/{}/BiVE_Q/CLP".format(args.data), exist_ok=True)
+	with open("./result_test/{}/BiVE_Q/CLP/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.txt".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial), 'w') as f:
 		f.write("CLP: {} {} {} {} {}\n".format(mr, mrr, hit10, hit3, hit1))

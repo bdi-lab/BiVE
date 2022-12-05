@@ -8,9 +8,9 @@ import numpy as np
 from .Model import Model
 from numpy.random import RandomState
 
-class BiVE_QuatE(Model):
+class BiVE_B(Model):
 	def __init__(self, ent_tot, rel_tot, meta_rel_tot, dim=50, seed=123):
-		super(BiVE_QuatE, self).__init__(ent_tot, rel_tot)
+		super(BiVE_B, self).__init__(ent_tot, rel_tot)
 
 		self.meta_rel_tot = meta_rel_tot
 		self.dim = dim
@@ -21,21 +21,31 @@ class BiVE_QuatE(Model):
 		self.ent_y = nn.Embedding(self.ent_tot, self.dim)
 		self.ent_z = nn.Embedding(self.ent_tot, self.dim)
 
+		self.rel_p_s = nn.Embedding(self.rel_tot, self.dim)
+		self.rel_p_x = nn.Embedding(self.rel_tot, self.dim)
+		self.rel_p_y = nn.Embedding(self.rel_tot, self.dim)
+		self.rel_p_z = nn.Embedding(self.rel_tot, self.dim)
+
 		self.rel_s = nn.Embedding(self.rel_tot, self.dim)
 		self.rel_x = nn.Embedding(self.rel_tot, self.dim)
 		self.rel_y = nn.Embedding(self.rel_tot, self.dim)
 		self.rel_z = nn.Embedding(self.rel_tot, self.dim)
 
 		if self.meta_rel_tot > 0:
+			self.meta_rel_p_s = nn.Embedding(self.meta_rel_tot, self.dim)
+			self.meta_rel_p_x = nn.Embedding(self.meta_rel_tot, self.dim)
+			self.meta_rel_p_y = nn.Embedding(self.meta_rel_tot, self.dim)
+			self.meta_rel_p_z = nn.Embedding(self.meta_rel_tot, self.dim)
+
 			self.meta_rel_s = nn.Embedding(self.meta_rel_tot, self.dim)
 			self.meta_rel_x = nn.Embedding(self.meta_rel_tot, self.dim)
 			self.meta_rel_y = nn.Embedding(self.meta_rel_tot, self.dim)
 			self.meta_rel_z = nn.Embedding(self.meta_rel_tot, self.dim)
 
-		self.W_s = nn.Linear(3 * self.dim, self.dim, bias=False)
-		self.W_x = nn.Linear(3 * self.dim, self.dim, bias=False)
-		self.W_y = nn.Linear(3 * self.dim, self.dim, bias=False)
-		self.W_z = nn.Linear(3 * self.dim, self.dim, bias=False)
+		self.W_s = nn.Linear(4 * self.dim, self.dim, bias=False)
+		self.W_x = nn.Linear(4 * self.dim, self.dim, bias=False)
+		self.W_y = nn.Linear(4 * self.dim, self.dim, bias=False)
+		self.W_z = nn.Linear(4 * self.dim, self.dim, bias=False)
 
 		self.init_weights()
 
@@ -49,12 +59,26 @@ class BiVE_QuatE(Model):
 
 		s, x, y, z = self.quaternion_init(self.rel_tot, self.dim)
 		s, x, y, z = torch.from_numpy(s), torch.from_numpy(x), torch.from_numpy(y), torch.from_numpy(z)
+		self.rel_p_s.weight.data = s.type_as(self.rel_p_s.weight.data)
+		self.rel_p_x.weight.data = x.type_as(self.rel_p_x.weight.data)
+		self.rel_p_y.weight.data = y.type_as(self.rel_p_y.weight.data)
+		self.rel_p_z.weight.data = z.type_as(self.rel_p_z.weight.data)
+
+		s, x, y, z = self.quaternion_init(self.rel_tot, self.dim)
+		s, x, y, z = torch.from_numpy(s), torch.from_numpy(x), torch.from_numpy(y), torch.from_numpy(z)
 		self.rel_s.weight.data = s.type_as(self.rel_s.weight.data)
 		self.rel_x.weight.data = x.type_as(self.rel_x.weight.data)
 		self.rel_y.weight.data = y.type_as(self.rel_y.weight.data)
 		self.rel_z.weight.data = z.type_as(self.rel_z.weight.data)
 
 		if self.meta_rel_tot > 0:
+			s, x, y, z = self.quaternion_init(self.meta_rel_tot, self.dim)
+			s, x, y, z = torch.from_numpy(s), torch.from_numpy(x), torch.from_numpy(y), torch.from_numpy(z)
+			self.meta_rel_p_s.weight.data = s.type_as(self.meta_rel_p_s.weight.data)
+			self.meta_rel_p_x.weight.data = x.type_as(self.meta_rel_p_x.weight.data)
+			self.meta_rel_p_y.weight.data = y.type_as(self.meta_rel_p_y.weight.data)
+			self.meta_rel_p_z.weight.data = z.type_as(self.meta_rel_p_z.weight.data)
+
 			s, x, y, z = self.quaternion_init(self.meta_rel_tot, self.dim)
 			s, x, y, z = torch.from_numpy(s), torch.from_numpy(x), torch.from_numpy(y), torch.from_numpy(z)
 			self.meta_rel_s.weight.data = s.type_as(self.meta_rel_s.weight.data)
@@ -137,12 +161,17 @@ class BiVE_QuatE(Model):
 		y_t = self.ent_y(batch_t)
 		z_t = self.ent_z(batch_t)
 
+		s_r_p = self.rel_p_s(batch_r)
+		x_r_p = self.rel_p_x(batch_r)
+		y_r_p = self.rel_p_y(batch_r)
+		z_r_p = self.rel_p_z(batch_r)
+
 		s_r = self.rel_s(batch_r)
 		x_r = self.rel_x(batch_r)
 		y_r = self.rel_y(batch_r)
 		z_r = self.rel_z(batch_r)
 
-		score = self._calc(s_h, x_h, y_h, z_h, s_t, x_t, y_t, z_t, s_r, x_r, y_r, z_r)
+		score = self._calc(s_h + s_r_p, x_h + x_r_p, y_h + y_r_p, z_h + z_r_p, s_t, x_t, y_t, z_t, s_r, x_r, y_r, z_r)
 		return score
 
 	def forward_meta(self, data):
@@ -164,6 +193,11 @@ class BiVE_QuatE(Model):
 		y_t1 = self.ent_y(batch_t1)
 		z_t1 = self.ent_z(batch_t1)
 
+		s_r1_p = self.rel_p_s(batch_r1)
+		x_r1_p = self.rel_p_x(batch_r1)
+		y_r1_p = self.rel_p_y(batch_r1)
+		z_r1_p = self.rel_p_z(batch_r1)
+
 		s_r1 = self.rel_s(batch_r1)
 		x_r1 = self.rel_x(batch_r1)
 		y_r1 = self.rel_y(batch_r1)
@@ -179,27 +213,37 @@ class BiVE_QuatE(Model):
 		y_t2 = self.ent_y(batch_t2)
 		z_t2 = self.ent_z(batch_t2)
 
+		s_r2_p = self.rel_p_s(batch_r2)
+		x_r2_p = self.rel_p_x(batch_r2)
+		y_r2_p = self.rel_p_y(batch_r2)
+		z_r2_p = self.rel_p_z(batch_r2)
+
 		s_r2 = self.rel_s(batch_r2)
 		x_r2 = self.rel_x(batch_r2)
 		y_r2 = self.rel_y(batch_r2)
 		z_r2 = self.rel_z(batch_r2)
+
+		s_R_p = self.meta_rel_p_s(batch_R)
+		x_R_p = self.meta_rel_p_x(batch_R)
+		y_R_p = self.meta_rel_p_y(batch_R)
+		z_R_p = self.meta_rel_p_z(batch_R)
 
 		s_R = self.meta_rel_s(batch_R)
 		x_R = self.meta_rel_x(batch_R)
 		y_R = self.meta_rel_y(batch_R)
 		z_R = self.meta_rel_z(batch_R)
 
-		s_H = self.W_s(torch.cat((s_h1, s_r1, s_t1), 1))
-		x_H = self.W_x(torch.cat((x_h1, x_r1, x_t1), 1))
-		y_H = self.W_y(torch.cat((y_h1, y_r1, y_t1), 1))
-		z_H = self.W_z(torch.cat((z_h1, z_r1, z_t1), 1))
+		s_H = self.W_s(torch.cat((s_h1, s_r1, s_r1_p, s_t1), 1))
+		x_H = self.W_x(torch.cat((x_h1, x_r1, x_r1_p, x_t1), 1))
+		y_H = self.W_y(torch.cat((y_h1, y_r1, y_r1_p, y_t1), 1))
+		z_H = self.W_z(torch.cat((z_h1, z_r1, z_r1_p, z_t1), 1))
 
-		s_T = self.W_s(torch.cat((s_h2, s_r2, s_t2), 1))
-		x_T = self.W_x(torch.cat((x_h2, x_r2, x_t2), 1))
-		y_T = self.W_y(torch.cat((y_h2, y_r2, y_t2), 1))
-		z_T = self.W_z(torch.cat((z_h2, z_r2, z_t2), 1))
+		s_T = self.W_s(torch.cat((s_h2, s_r2, s_r2_p, s_t2), 1))
+		x_T = self.W_x(torch.cat((x_h2, x_r2, x_r2_p, x_t2), 1))
+		y_T = self.W_y(torch.cat((y_h2, y_r2, y_r2_p, y_t2), 1))
+		z_T = self.W_z(torch.cat((z_h2, z_r2, z_r2_p, z_t2), 1))
 
-		score_meta = self._calc(s_H, x_H, y_H, z_H, s_T, x_T, y_T, z_T, s_R, x_R, y_R, z_R)
+		score_meta = self._calc(s_H + s_R_p, x_H + x_R_p, y_H + y_R_p, z_H + z_R_p, s_T, x_T, y_T, z_T, s_R, x_R, y_R, z_R)
 		return score_meta
 
 	def regularization(self, data):
@@ -217,6 +261,11 @@ class BiVE_QuatE(Model):
 		y_t = self.ent_y(batch_t)
 		z_t = self.ent_z(batch_t)
 
+		s_r_p = self.rel_p_s(batch_r)
+		x_r_p = self.rel_p_x(batch_r)
+		y_r_p = self.rel_p_y(batch_r)
+		z_r_p = self.rel_p_z(batch_r)
+
 		s_r = self.rel_s(batch_r)
 		x_r = self.rel_x(batch_r)
 		y_r = self.rel_y(batch_r)
@@ -231,7 +280,11 @@ class BiVE_QuatE(Model):
 				+ torch.mean(torch.abs(y_t) ** 2)
 				+ torch.mean(torch.abs(z_t) ** 2))
 
-		regul2 = (torch.mean(torch.abs(s_r) ** 2)
+		regul2 = (torch.mean(torch.abs(s_r_p) ** 2)
+				+ torch.mean(torch.abs(x_r_p) ** 2)
+				+ torch.mean(torch.abs(y_r_p) ** 2)
+				+ torch.mean(torch.abs(z_r_p) ** 2)
+				+ torch.mean(torch.abs(s_r) ** 2)
 				+ torch.mean(torch.abs(x_r) ** 2)
 				+ torch.mean(torch.abs(y_r) ** 2)
 				+ torch.mean(torch.abs(z_r) ** 2))
@@ -256,6 +309,11 @@ class BiVE_QuatE(Model):
 		y_t1 = self.ent_y(batch_t1)
 		z_t1 = self.ent_z(batch_t1)
 
+		s_r1_p = self.rel_p_s(batch_r1)
+		x_r1_p = self.rel_p_x(batch_r1)
+		y_r1_p = self.rel_p_y(batch_r1)
+		z_r1_p = self.rel_p_z(batch_r1)
+
 		s_r1 = self.rel_s(batch_r1)
 		x_r1 = self.rel_x(batch_r1)
 		y_r1 = self.rel_y(batch_r1)
@@ -271,25 +329,35 @@ class BiVE_QuatE(Model):
 		y_t2 = self.ent_y(batch_t2)
 		z_t2 = self.ent_z(batch_t2)
 
+		s_r2_p = self.rel_p_s(batch_r2)
+		x_r2_p = self.rel_p_x(batch_r2)
+		y_r2_p = self.rel_p_y(batch_r2)
+		z_r2_p = self.rel_p_z(batch_r2)
+
 		s_r2 = self.rel_s(batch_r2)
 		x_r2 = self.rel_x(batch_r2)
 		y_r2 = self.rel_y(batch_r2)
 		z_r2 = self.rel_z(batch_r2)
+
+		s_R_p = self.meta_rel_p_s(batch_R)
+		x_R_p = self.meta_rel_p_x(batch_R)
+		y_R_p = self.meta_rel_p_y(batch_R)
+		z_R_p = self.meta_rel_p_z(batch_R)
 
 		s_R = self.meta_rel_s(batch_R)
 		x_R = self.meta_rel_x(batch_R)
 		y_R = self.meta_rel_y(batch_R)
 		z_R = self.meta_rel_z(batch_R)
 
-		s_H = self.W_s(torch.cat((s_h1, s_r1, s_t1), 1))
-		x_H = self.W_x(torch.cat((x_h1, x_r1, x_t1), 1))
-		y_H = self.W_y(torch.cat((y_h1, y_r1, y_t1), 1))
-		z_H = self.W_z(torch.cat((z_h1, z_r1, z_t1), 1))
+		s_H = self.W_s(torch.cat((s_h1, s_r1, s_r1_p, s_t1), 1))
+		x_H = self.W_x(torch.cat((x_h1, x_r1, x_r1_p, x_t1), 1))
+		y_H = self.W_y(torch.cat((y_h1, y_r1, y_r1_p, y_t1), 1))
+		z_H = self.W_z(torch.cat((z_h1, z_r1, z_r1_p, z_t1), 1))
 
-		s_T = self.W_s(torch.cat((s_h2, s_r2, s_t2), 1))
-		x_T = self.W_x(torch.cat((x_h2, x_r2, x_t2), 1))
-		y_T = self.W_y(torch.cat((y_h2, y_r2, y_t2), 1))
-		z_T = self.W_z(torch.cat((z_h2, z_r2, z_t2), 1))
+		s_T = self.W_s(torch.cat((s_h2, s_r2, s_r2_p, s_t2), 1))
+		x_T = self.W_x(torch.cat((x_h2, x_r2, x_r2_p, x_t2), 1))
+		y_T = self.W_y(torch.cat((y_h2, y_r2, y_r2_p, y_t2), 1))
+		z_T = self.W_z(torch.cat((z_h2, z_r2, z_r2_p, z_t2), 1))
 		
 		regul = (torch.mean(torch.abs(s_H) ** 2)
 				+ torch.mean(torch.abs(x_H) ** 2)
@@ -300,7 +368,11 @@ class BiVE_QuatE(Model):
 				+ torch.mean(torch.abs(y_T) ** 2)
 				+ torch.mean(torch.abs(z_T) ** 2))
 
-		regul2 = (torch.mean(torch.abs(s_R) ** 2)
+		regul2 = (torch.mean(torch.abs(s_R_p) ** 2)
+				+ torch.mean(torch.abs(x_R_p) ** 2)
+				+ torch.mean(torch.abs(y_R_p) ** 2)
+				+ torch.mean(torch.abs(z_R_p) ** 2)
+				+ torch.mean(torch.abs(s_R) ** 2)
 				+ torch.mean(torch.abs(x_R) ** 2)
 				+ torch.mean(torch.abs(y_R) ** 2)
 				+ torch.mean(torch.abs(z_R) ** 2))

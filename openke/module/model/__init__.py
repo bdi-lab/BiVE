@@ -15,8 +15,8 @@ from .SimplE import SimplE
 from .RotatE import RotatE
 from .QuatE import QuatE
 from .BiQUE_add import BiQUE_add
-from .BiVE_BiQUE_add import BiVE_BiQUE_add
-from .BiVE_QuatE import BiVE_QuatE
+from .BiVE_B import BiVE_B
+from .BiVE_Q import BiVE_Q
 
 __all__ = [
     'Model',
@@ -32,6 +32,6 @@ __all__ = [
     'RotatE',
     'QuatE',
     'BiQUE_add',
-    'BiVE_QuatE',
-    'BiVE_BiQUE_add',
+    'BiVE_Q',
+    'BiVE_B',
 ]
