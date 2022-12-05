@@ -3,7 +3,7 @@ This code is an implementation of the paper, "Learning Representations of Bi-Lev
 
 This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementation, which is an open toolkit for knowledge graph embedding. Additional codes are written by Chanyoung Chung.
 
-When you use this code, please cite our paper.
+When you use this code or data, please cite our paper.
 
 > Chanyoung Chung and Joyce Jiyoung Whang, Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction, To appear in AAAI 23
 
