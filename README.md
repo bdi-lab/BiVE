@@ -3,8 +3,9 @@ This code is an implementation of the paper, "Learning Representations of Bi-Lev
 
 This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementation, which is an open toolkit for knowledge graph embedding.
 
-
 When you use this code, please cite our paper.
+
+
 
 ## Usage
 
