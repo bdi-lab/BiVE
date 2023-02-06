@@ -1,7 +1,7 @@
 # BiVE: Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction
 This code is an implementation of the paper, "Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction (AAAI 2023)".
 
-This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementation, which is an open toolkit for knowledge graph embedding. Additional codes are written by Chanyoung Chung.
+This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementation, which is an open toolkit for knowledge graph embedding. Additional codes are written by Chanyoung Chung (chanyoung.chung@kaist.ac.kr).
 
 When you use this code or data, please cite our paper.
 
