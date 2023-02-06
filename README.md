@@ -5,7 +5,7 @@ This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementat
 
 When you use this code or data, please cite our paper.
 
-> Chanyoung Chung and Joyce Jiyoung Whang, Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction, To appear in AAAI 2023
+> Chanyoung Chung and Joyce Jiyoung Whang, Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction, AAAI Conference on Artificial Intelligence (AAAI), 2023.
 
 ## Usage
 
