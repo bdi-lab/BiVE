@@ -132,8 +132,8 @@ except:
 	)
 	
 	trainer.run()
-		os.makedirs("./checkpoint/{}/BiVE_Q".format(args.data), exist_ok=True)
-		BiVE_Q.save_checkpoint('./checkpoint/{}/BiVE_Q/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
+	os.makedirs("./checkpoint/{}/BiVE_Q".format(args.data), exist_ok=True)
+	BiVE_Q.save_checkpoint('./checkpoint/{}/BiVE_Q/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
 
 if args.lp:
 	test_dataloader = TestDataLoader("./benchmarks/{}/base/".format(args.data), "link")
