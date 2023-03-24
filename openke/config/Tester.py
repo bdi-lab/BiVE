@@ -67,7 +67,7 @@ class Tester(object):
             'mode': data['mode']
         })
 
-    def run_link_prediction(self, type_constrain=False, save_dir=None):
+    def run_link_prediction(self, type_constrain=False, save_dir=None, write_dir=None):
         self.lib.initTest()
         self.data_loader.set_sampling_mode('link')
         if type_constrain:
@@ -79,9 +79,18 @@ class Tester(object):
             file = open(save_dir, 'w')
             cache = set()
 
+        if write_dir != None:
+            f = open(write_dir, 'w')
+
         for index, [data_head, data_tail] in enumerate(training_range):
             h, r, t = data_tail["batch_h"][0], data_head["batch_r"][0], data_head["batch_t"][0]
             score = self.test_one_step(data_head)
+            if write_dir != None:
+                tmp = score.argsort()
+                rank = np.where(tmp == h)[0][0]
+                if rank < 3:
+                    f.write("_ {} {} | {}\n".format(r, t, h))
+                    f.write("{}\n".format(' '.join(map(str, list(tmp[:rank + 1])))))
             if save_dir != None and ('_', r, t) not in cache:
                 score_write = []
                 for item in score:
@@ -90,6 +99,12 @@ class Tester(object):
                 cache.add(('_', r, t))
             self.lib.testHead(score.__array_interface__["data"][0], index, type_constrain)
             score = self.test_one_step(data_tail)
+            if write_dir != None:
+                tmp = score.argsort()
+                rank = np.where(tmp == t)[0][0]
+                if rank < 3:
+                    f.write("{} {} _ | {}\n".format(h, r, t))
+                    f.write("{}\n".format(' '.join(map(str, list(tmp[:rank + 1])))))
             if save_dir != None and (h, r, '_') not in cache:
                 score_write = []
                 for item in score:
@@ -101,6 +116,9 @@ class Tester(object):
 
         if save_dir != None:
             file.close()
+
+        if write_dir != None:
+            f.close()
 
         mr = self.lib.getTestLinkMR(type_constrain)
         mrr = self.lib.getTestLinkMRR(type_constrain)
@@ -125,7 +143,7 @@ class Tester(object):
             'mode': data['mode'],
         })
 
-    def run_triplet_prediction(self, type_constrain=False, list_entity_meta=None):
+    def run_triplet_prediction(self, type_constrain=False, list_entity_meta=None, save_dir=None, write_dir=None):
         self.lib.initTest()
         self.data_loader.set_sampling_mode('link')
         if type_constrain:
@@ -134,12 +152,26 @@ class Tester(object):
             type_constrain = 0
         training_range = tqdm(self.data_loader)
         ranks = []
+        if save_dir != None:
+            f = open(save_dir, 'w')
         for index, [data_head, data_tail] in enumerate(training_range):
             h, r, t = data_tail["batch_h"][0], data_head["batch_r"][0], data_head["batch_t"][0]
             score = self.test_one_step_meta(data_head, list_entity_meta)
+            if save_dir != None:
+                tmp = score.argsort()
+                rank = np.where(tmp == h)[0][0]
+                if rank < 3:
+                    f.write("_ {} {} | {}\n".format(r, t, h))
+                    f.write("{}\n".format(' '.join(map(str, list(tmp[:rank + 1])))))
             self.lib.testHead(score.__array_interface__["data"][0], index, type_constrain)
             ranks.append(np.sum(score <= score[h]))
             score = self.test_one_step_meta(data_tail, list_entity_meta)
+            if save_dir != None:
+                tmp = score.argsort()
+                rank = np.where(tmp == t)[0][0]
+                if rank < 3:
+                    f.write("{} {} _ | {}\n".format(h, r, t))
+                    f.write("{}\n".format(' '.join(map(str, list(tmp[:rank + 1])))))
             self.lib.testTail(score.__array_interface__["data"][0], index, type_constrain)
             ranks.append(np.sum(score <= score[t]))
         self.lib.test_link_prediction(type_constrain)

@@ -232,7 +232,7 @@ for (relation_path, relation), count in tqdm(sort_frequency):
 	list_aug += tmp_aug
 
 list_aug = remove_duplicate(list_aug)
-with open("./benchmarks/{}/base/augment2id.txt".format(args.data), 'w') as f:
+with open("./benchmarks/{}/base/augment2id_tmp.txt".format(args.data), 'w') as f:
 	f.write("{}\n".format(len(list_aug)))
 	for h, r, t in list_aug:
 		f.write("{} {} {}\n".format(h, t, r))

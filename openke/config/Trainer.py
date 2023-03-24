@@ -24,12 +24,10 @@ class Trainer(object):
 				 opt_method="sgd",
 				 save_steps=None,
 				 checkpoint_dir=None,
-				 meta=False,
 				 list_entity_meta=None,
 				 list_meta=None,
 				 batch_meta_size=256,
 				 weight_meta=0.0,
-				 aug=False,
 				 list_aug=None,
 				 batch_aug_size=256,
 				 weight_aug=0.0):
@@ -49,13 +47,11 @@ class Trainer(object):
 		self.save_steps = save_steps
 		self.checkpoint_dir = checkpoint_dir
 
-		self.meta = meta
 		self.list_entity_meta = list_entity_meta
 		self.list_meta = list_meta
 		self.batch_meta_size = batch_meta_size
 		self.weight_meta = weight_meta
 
-		self.aug = aug
 		self.list_aug = list_aug
 		self.batch_aug_size = batch_aug_size
 		self.weight_aug = weight_aug
@@ -70,7 +66,7 @@ class Trainer(object):
 			'mode': data['mode']
 		}, 'base')
 
-		if self.meta:
+		if self.weight_meta != 0.0:
 			loss_meta = self.model({
 				'batch_h1': self.to_var(data['batch_h1'], self.use_gpu),
 				'batch_t1': self.to_var(data['batch_t1'], self.use_gpu),
@@ -84,7 +80,7 @@ class Trainer(object):
 			}, 'meta')
 			loss += self.weight_meta * self.batch_meta_size / self.data_loader.get_batch_size() * loss_meta
 
-		if self.aug:
+		if self.weight_aug != 0.0:
 			loss_aug = self.model({
 				'batch_h': self.to_var(data['batch_h_aug'], self.use_gpu),
 				'batch_t': self.to_var(data['batch_t_aug'], self.use_gpu),
@@ -134,9 +130,9 @@ class Trainer(object):
 		for epoch in training_range:
 			res = 0.0
 			for data in self.data_loader:
-				if self.meta:
+				if self.weight_meta != 0.0:
 					data = self.sampling_meta(data)
-				if self.aug:
+				if self.weight_aug != 0.0:
 					data = self.sampling_aug(data)
 				loss = self.train_one_step(data)
 				res += loss

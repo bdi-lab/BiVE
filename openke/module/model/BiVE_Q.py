@@ -26,11 +26,10 @@ class BiVE_Q(Model):
 		self.rel_y = nn.Embedding(self.rel_tot, self.dim)
 		self.rel_z = nn.Embedding(self.rel_tot, self.dim)
 
-		if self.meta_rel_tot > 0:
-			self.meta_rel_s = nn.Embedding(self.meta_rel_tot, self.dim)
-			self.meta_rel_x = nn.Embedding(self.meta_rel_tot, self.dim)
-			self.meta_rel_y = nn.Embedding(self.meta_rel_tot, self.dim)
-			self.meta_rel_z = nn.Embedding(self.meta_rel_tot, self.dim)
+		self.meta_rel_s = nn.Embedding(self.meta_rel_tot, self.dim)
+		self.meta_rel_x = nn.Embedding(self.meta_rel_tot, self.dim)
+		self.meta_rel_y = nn.Embedding(self.meta_rel_tot, self.dim)
+		self.meta_rel_z = nn.Embedding(self.meta_rel_tot, self.dim)
 
 		self.W_s = nn.Linear(3 * self.dim, self.dim, bias=False)
 		self.W_x = nn.Linear(3 * self.dim, self.dim, bias=False)
@@ -54,13 +53,12 @@ class BiVE_Q(Model):
 		self.rel_y.weight.data = y.type_as(self.rel_y.weight.data)
 		self.rel_z.weight.data = z.type_as(self.rel_z.weight.data)
 
-		if self.meta_rel_tot > 0:
-			s, x, y, z = self.quaternion_init(self.meta_rel_tot, self.dim)
-			s, x, y, z = torch.from_numpy(s), torch.from_numpy(x), torch.from_numpy(y), torch.from_numpy(z)
-			self.meta_rel_s.weight.data = s.type_as(self.meta_rel_s.weight.data)
-			self.meta_rel_x.weight.data = x.type_as(self.meta_rel_x.weight.data)
-			self.meta_rel_y.weight.data = y.type_as(self.meta_rel_y.weight.data)
-			self.meta_rel_z.weight.data = z.type_as(self.meta_rel_z.weight.data)
+		s, x, y, z = self.quaternion_init(self.meta_rel_tot, self.dim)
+		s, x, y, z = torch.from_numpy(s), torch.from_numpy(x), torch.from_numpy(y), torch.from_numpy(z)
+		self.meta_rel_s.weight.data = s.type_as(self.meta_rel_s.weight.data)
+		self.meta_rel_x.weight.data = x.type_as(self.meta_rel_x.weight.data)
+		self.meta_rel_y.weight.data = y.type_as(self.meta_rel_y.weight.data)
+		self.meta_rel_z.weight.data = z.type_as(self.meta_rel_z.weight.data)
 
 		nn.init.xavier_uniform_(self.W_s.weight.data)
 		nn.init.xavier_uniform_(self.W_x.weight.data)
@@ -120,7 +118,7 @@ class BiVE_Q(Model):
 		D = s_h * z_r + s_r * z_h + x_h * y_r - x_r * y_h
 
 		score_r = (A * s_t + B * x_t + C * y_t + D * z_t)
-		return -torch.sum(score_r, -1)
+		return torch.sum(score_r, -1)
 
 	def forward(self, data):
 		batch_h = data['batch_h']

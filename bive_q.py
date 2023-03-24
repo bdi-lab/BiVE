@@ -28,9 +28,6 @@ random.seed(args.serial)
 np.random.seed(args.serial)
 torch.manual_seed(args.serial)
 
-OMP_NUM_THREADS=8
-torch.set_num_threads(8)
-
 ### PRINT INFO ###
 print("data: {} alpha: {} regul: {} meta: {} aug: {} epoch: {}".format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch))
 
@@ -132,7 +129,7 @@ except:
 	)
 	
 	trainer.run()
-	os.makedirs("./checkpoint/{}/BiVE_Q".format(args.data), exist_ok=True)
+	os.makedirs('./checkpoint/{}/BiVE_Q'.format(args.data), exist_ok=True)
 	BiVE_Q.save_checkpoint('./checkpoint/{}/BiVE_Q/alpha_{}_regul_{}_meta_{}_aug_{}_epoch_{}-{}.ckpt'.format(args.data, args.alpha, args.regul, args.meta, args.aug, args.epoch, args.serial))
 
 if args.lp:
