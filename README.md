@@ -1,5 +1,5 @@
 # BiVE: Learning Representations of Bi-level Knowledge Graphs for Reasoning beyond Link Prediction
-This code is an implementation of the paper, "Learning Representations of Bi-level Knowledge Graphs for Reasoning beyond Link Prediction (AAAI 2023)".
+This code is an implementation of the following paper:
 
 > Chanyoung Chung and Joyce Jiyoung Whang, Learning Representations of Bi-level Knowledge Graphs for Reasoning beyond Link Prediction, AAAI Conference on Artificial Intelligence (AAAI), 2023.
 
