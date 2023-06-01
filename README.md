@@ -8,7 +8,7 @@ This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementat
 When you use this code or data, please cite our paper.
 
 ```bibtex
-@article{bive-aaai2023,
+@article{bive,
   author={Chanyoung Chung and Joyce Jiyoung Whang},
   title={Learning Representations of Bi-level Knowledge Graphs for Reasoning beyond Link Prediction}, 
   year={2023},
