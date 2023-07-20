@@ -8,12 +8,13 @@ This code is based on the [OpenKE](https://github.com/thunlp/OpenKE) implementat
 When you use this code or data, please cite our paper.
 
 ```bibtex
-@article{bive,
-  author={Chanyoung Chung and Joyce Jiyoung Whang},
-  title={Learning Representations of Bi-level Knowledge Graphs for Reasoning beyond Link Prediction}, 
-  year={2023},
-  journal={arXiv preprint arXiv:2302.02601},
-  doi={10.48550/arXiv.2302.02601}
+@inproceedings{bive,
+	author={Chanyoung Chung and Joyce Jiyoung Whang},
+	title={Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction},
+	booktitle={Proceedings of the 37th AAAI Conference on Artificial Intelligence},
+	year={2023},
+	pages={4208--4216},
+	doi={10.1609/aaai.v37i4.25538}
 }
 ```
 
