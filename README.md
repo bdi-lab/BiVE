@@ -10,7 +10,7 @@ When you use this code or data, please cite our paper.
 ```bibtex
 @inproceedings{bive,
 	author={Chanyoung Chung and Joyce Jiyoung Whang},
-	title={Learning Representations of Bi-Level Knowledge Graphs for Reasoning beyond Link Prediction},
+	title={Learning Representations of Bi-level Knowledge Graphs for Reasoning beyond Link Prediction},
 	booktitle={Proceedings of the 37th AAAI Conference on Artificial Intelligence},
 	year={2023},
 	pages={4208--4216},
