@@ -4,10 +4,10 @@ import torch.nn.functional as F
 import numpy as np
 from .Loss import Loss
 
-class SoftplusLoss(Loss):
+class SoftplusLoss_new(Loss):
 
 	def __init__(self, adv_temperature = None):
-		super(SoftplusLoss, self).__init__()
+		super(SoftplusLoss_new, self).__init__()
 		self.criterion = nn.Softplus()
 		if adv_temperature != None:
 			self.adv_temperature = nn.Parameter(torch.Tensor([adv_temperature]))
@@ -23,7 +23,8 @@ class SoftplusLoss(Loss):
 		if self.adv_flag:
 			return (self.criterion(-p_score).mean() + (self.get_weights(n_score) * self.criterion(n_score)).sum(dim = -1).mean()) / 2
 		else:
-			return (self.criterion(-p_score).mean() + self.criterion(n_score).mean()) / 2
+			return torch.mean(self.criterion(torch.cat((-p_score.flatten(), n_score.flatten()))))
+			#return (self.criterion(-p_score).mean() + self.criterion(n_score).mean()) / 2
 			
 
 	def predict(self, p_score, n_score):

@@ -1,7 +1,7 @@
 import openke
 from openke.config import Trainer, Tester
 from openke.module.model import BiVE_Q
-from openke.module.loss import SoftplusLoss
+from openke.module.loss import SoftplusLoss_submitted
 from openke.module.strategy import NegativeSampling
 from openke.data import TrainDataLoader, TestDataLoader
 import argparse
@@ -102,7 +102,7 @@ except:
 	# define the loss function
 	model = NegativeSampling(
 		model=BiVE_Q, 
-		loss=SoftplusLoss(),
+		loss=SoftplusLoss_submitted(),
 		batch_size=train_dataloader.get_batch_size(), 
 		regul_rate=args.regul,
 		meta=(args.meta != 0.0),
