@@ -32,14 +32,14 @@ python augment.py [data] [conf]
 
 ### BiVE
 
-To train BiVE-Q, use `bive_q.py`.
+To train BiVE-Q, use `bive_q_new.py`.
 
 ```
-CUDA_VISIBLE_DEVICES=0 python bive_q.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
+CUDA_VISIBLE_DEVICES=0 python bive_q_new.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
 ```
 
-To train BiVE-B, use `bive_b.py`.
+To train BiVE-B, use `bive_b_new.py`.
 
 ```
-CUDA_VISIBLE_DEVICES=0 python bive_b.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
+CUDA_VISIBLE_DEVICES=0 python bive_b_new.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
 ```
