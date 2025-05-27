@@ -43,3 +43,7 @@ To train BiVE-B, use `bive_b_new.py`.
 ```
 CUDA_VISIBLE_DEVICES=0 python bive_b_new.py [data] [learning_rate] [regul_rate] [epoch] --meta [weight_high] --aug [weight_aug] --lp/tp/clp
 ```
+
+### License
+
+Our datasets and codes are released under the CC BY-NC-SA 4.0 license.
